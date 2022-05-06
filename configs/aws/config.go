@@ -4,26 +4,27 @@ import (
 	"context"
 	"database/sql/driver"
 	"fmt"
+	"net/http"
 	"sync"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
-	"gitlab.com/kaushikayanam/base/configs/common"
-	"gitlab.com/kaushikayanam/base/infrastructure/sqldb"
+	"gitlab.com/kaushikayanam/base"
 )
 
 type AWSConfig struct {
-	MaxCacheSize int   `mapstructure:"maxCacheSize"`
-	CacheItemTTL int64 `mapstructure:"cacheItemTTL"`
-	cache        *secretcache.Cache
-	d            driver.Driver
+	MaxCacheSize    int   `mapstructure:"maxCacheSize"`
+	CacheItemTTL    int64 `mapstructure:"cacheItemTTL"`
+	cache           *secretcache.Cache
+	d               driver.Driver
+	httpMiddlewares []func(http.Handler) http.Handler
 }
 
-func (a *AWSConfig) InitDB(driverName string) {
+func (a *AWSConfig) InitDB(d driver.Driver) {
 	var err error
-	a.d, err = common.InitDriver(driverName)
+	a.d = d
 	if err != nil {
 		panic(err)
 	}
@@ -73,8 +74,12 @@ func (a *AWSConfig) NewConnector(ctx context.Context) (conn driver.Connector, er
 	return
 }
 
-func (a *AWSConfig) ConnectorProvider() (pName string, p sqldb.ConnectorProvider) {
+func (a *AWSConfig) ConnectorProvider() (pName string, p base.ConnectorProvider) {
 	pName = "aws"
 	p = a
 	return
+}
+
+func (a *AWSConfig) GetMiddlewares() []func(http.Handler) http.Handler {
+	return a.httpMiddlewares
 }

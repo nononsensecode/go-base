@@ -5,8 +5,7 @@ import (
 	"net/http"
 
 	"github.com/jmoiron/sqlx"
-	"gitlab.com/kaushikayanam/base/configs/common"
-	"gitlab.com/kaushikayanam/base/infrastructure/sqldb"
+	"gitlab.com/kaushikayanam/base"
 )
 
 type LocalConfig struct {
@@ -16,13 +15,13 @@ type LocalConfig struct {
 	httpMiddlewares  []func(http.Handler) http.Handler
 }
 
-func (l *LocalConfig) ConnectorProvider() (pName string, p sqldb.ConnectorProvider) {
+func (l *LocalConfig) ConnectorProvider() (pName string, p base.ConnectorProvider) {
 	pName = "local"
 	p = l
 	return
 }
 
-func (l *LocalConfig) InitDB(dbName string) {
+func (l *LocalConfig) InitDB(d driver.Driver) {
 	var (
 		err      error
 		clientDb *sqlx.DB
@@ -34,13 +33,7 @@ func (l *LocalConfig) InitDB(dbName string) {
 	}
 
 	l.clientRepo = NewClientRepository(clientDb)
-
-	l.d, err = common.InitDriver(dbName)
-	if err != nil {
-		panic(err)
-	}
-
-	l.httpMiddlewares = make([]func(http.Handler) http.Handler, 0)
+	l.d = d
 }
 
 func (l *LocalConfig) GetMiddlewares() []func(http.Handler) http.Handler {

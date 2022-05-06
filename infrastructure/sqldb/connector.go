@@ -5,22 +5,17 @@ import (
 	"database/sql/driver"
 	"fmt"
 
+	"gitlab.com/kaushikayanam/base"
 	"gitlab.com/kaushikayanam/base/context/ctxtypes"
 )
 
 var (
-	connProviders map[string]ConnectorProvider
+	connProviders map[string]base.ConnectorProvider
 	connectors    map[string]map[string]driver.Connector
 )
 
-type ConnectorProvider interface {
-	NewConnector(ctx context.Context) (driver.Connector, error)
-	InitDB(dbName string)
-	ConnectorProvider() (string, ConnectorProvider)
-}
-
-func Init(providers []ConnectorProvider) {
-	connProviders = make(map[string]ConnectorProvider)
+func Init(providers []base.ConnectorProvider) {
+	connProviders = make(map[string]base.ConnectorProvider)
 	connectors = make(map[string]map[string]driver.Connector)
 	for _, p := range providers {
 		name, provider := p.ConnectorProvider()
@@ -31,7 +26,7 @@ func Init(providers []ConnectorProvider) {
 func GetConnector(ctx context.Context) (c driver.Connector, err error) {
 	var (
 		vendor   string
-		provider ConnectorProvider
+		provider base.ConnectorProvider
 		clientId string
 		ok       bool
 	)

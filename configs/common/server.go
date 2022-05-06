@@ -18,6 +18,21 @@ func (s ServerConfig) Address() string {
 	return fmt.Sprintf("%s:%d", s.Host, s.Port)
 }
 
+func (s ServerConfig) SqlVendor() string {
+	return s.Persistence.SqlVendor
+}
+
+func (s ServerConfig) ChiCorsOptions() cors.Options {
+	return cors.Options{
+		AllowedOrigins:   s.Cors.AllowedAddresses,
+		AllowedMethods:   s.Cors.AllowedMethods,
+		AllowedHeaders:   s.Cors.AllowedHeaders,
+		ExposedHeaders:   s.Cors.ExposedHeaders,
+		AllowCredentials: s.Cors.AllowCredentials,
+		MaxAge:           s.Cors.MaxAge,
+	}
+}
+
 type CorsConfig struct {
 	AllowedAddresses []string `mapstructure:"allowedAddresses"`
 	AllowedMethods   []string `mapstructure:"allowedMethods"`
@@ -27,17 +42,6 @@ type CorsConfig struct {
 	MaxAge           int      `mapstructure:"maxAge"`
 }
 
-func (c CorsConfig) ChiCorsOptions() cors.Options {
-	return cors.Options{
-		AllowedOrigins:   c.AllowedAddresses,
-		AllowedMethods:   c.AllowedMethods,
-		AllowedHeaders:   c.AllowedHeaders,
-		ExposedHeaders:   c.ExposedHeaders,
-		AllowCredentials: c.AllowCredentials,
-		MaxAge:           c.MaxAge,
-	}
-}
-
 type PersistenceConfig struct {
-	Vendor string `mapstructure:"vendor"`
+	SqlVendor string `mapstructure:"sqlVendor"`
 }
