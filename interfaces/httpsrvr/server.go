@@ -14,10 +14,14 @@ var (
 	options cors.Options
 )
 
-func RunHTTPServer(addr string, createHandler func(router chi.Router) http.Handler, opts cors.Options, apiPrefix string) {
+func RunHTTPServer(addr string, createHandler func(router chi.Router) http.Handler,
+	middlewares []func(http.Handler) http.Handler, opts cors.Options, apiPrefix string) {
 	options = opts
 	apiRouter := chi.NewRouter()
 	setMiddlewares(apiRouter)
+	for _, m := range middlewares {
+		apiRouter.Use(m)
+	}
 
 	rootRouter := chi.NewRouter()
 	rootRouter.Mount(apiPrefix, createHandler(apiRouter))
