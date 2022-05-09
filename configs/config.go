@@ -53,7 +53,7 @@ func (cfg *Config) initsql() {
 	switch cfg.PlatformConfig.Name {
 	case "local":
 		var lcfg local.LocalConfig
-		if err := mapstructure.Decode(cfg.PlatformConfig, &lcfg); err != nil {
+		if err := mapstructure.Decode(cfg.PlatformConfig.Config, &lcfg); err != nil {
 			panic(err)
 		}
 		lcfg.InitDB(d)
@@ -61,7 +61,7 @@ func (cfg *Config) initsql() {
 		cfg.httpMiddlewareProviders = append(cfg.httpMiddlewareProviders, &lcfg)
 	case "aws":
 		var acfg aws.AWSConfig
-		if err := mapstructure.Decode(cfg.PlatformConfig, &acfg); err != nil {
+		if err := mapstructure.Decode(cfg.PlatformConfig.Config, &acfg); err != nil {
 			panic(err)
 		}
 		acfg.InitDB(d)
