@@ -36,6 +36,7 @@ func (l *LocalConfig) InitDB(d driver.Driver) {
 	l.d = d
 }
 
+// For future use
 func (l *LocalConfig) GetMiddlewares() []func(http.Handler) http.Handler {
 	return l.httpMiddlewares
 }

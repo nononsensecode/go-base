@@ -16,9 +16,10 @@ import (
 )
 
 type Config struct {
-	Server         common.ServerConfig `mapstructure:"server"`
-	PlatformConfig PlatformConfig      `mapstructure:"platform"`
-	isInitialized  bool
+	Server                  common.ServerConfig `mapstructure:"server"`
+	PlatformConfig          PlatformConfig      `mapstructure:"platform"`
+	httpMiddlewareProviders []base.MiddlewareProvider
+	isInitialized           bool
 }
 
 func (cfg *Config) Init() {

@@ -80,6 +80,7 @@ func (a *AWSConfig) ConnectorProvider() (pName string, p base.ConnectorProvider)
 	return
 }
 
+// For future use
 func (a *AWSConfig) GetMiddlewares() []func(http.Handler) http.Handler {
 	return a.httpMiddlewares
 }
