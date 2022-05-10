@@ -2,6 +2,7 @@ package httpsrvr
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/middleware"
@@ -11,23 +12,39 @@ import (
 )
 
 var (
-	options cors.Options
+	options cors.Options = cors.Options{
+		AllowedOrigins:   []string{},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}
+	Middlewares []func(http.Handler) http.Handler
 )
 
 func RunHTTPServer(addr string, createHandler func(router chi.Router) http.Handler,
-	middlewares []func(http.Handler) http.Handler, opts cors.Options, apiPrefix string) {
-	options = opts
+	middlewares []func(http.Handler) http.Handler, allowedAddresses []string, apiPrefix string) {
+
+	updateCorsAllowedAddresses(allowedAddresses)
+
 	apiRouter := chi.NewRouter()
+
+	Middlewares = append(Middlewares, middlewares...)
 	setMiddlewares(apiRouter)
-	for _, m := range middlewares {
-		apiRouter.Use(m)
-	}
 
 	rootRouter := chi.NewRouter()
+	if strings.TrimSpace(apiPrefix) == "" {
+		apiPrefix = "/"
+	}
 	rootRouter.Mount(apiPrefix, createHandler(apiRouter))
 	logrus.Info("Starting HTTP server")
 
 	_ = http.ListenAndServe(addr, rootRouter)
+}
+
+func updateCorsAllowedAddresses(addresses []string) {
+	options.AllowedOrigins = append(options.AllowedOrigins, addresses...)
 }
 
 func setMiddlewares(router *chi.Mux) {
@@ -43,6 +60,10 @@ func setMiddlewares(router *chi.Mux) {
 		middleware.SetHeader("X-Frame-Options", "deny"),
 	)
 	router.Use(middleware.NoCache)
+
+	for _, m := range Middlewares {
+		router.Use(m)
+	}
 }
 
 func addCorsMiddleware(router *chi.Mux) {

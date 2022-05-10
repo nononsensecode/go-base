@@ -30,10 +30,7 @@ func setClientDetails(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-func (c *Config) GetHttpMiddlewares() (m []func(next http.Handler) http.Handler) {
-	for _, p := range c.httpMiddlewareProviders {
-		m = append(m, p.GetMiddlewares()...)
-	}
+func (c *Config) getHttpMiddlewares() (m []func(next http.Handler) http.Handler) {
 	m = append(m, setClientDetails)
 	m = append(m, c.setCloudPlatform)
 	return

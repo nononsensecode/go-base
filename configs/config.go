@@ -12,17 +12,18 @@ import (
 	"gitlab.com/kaushikayanam/base/configs/common"
 	"gitlab.com/kaushikayanam/base/configs/local"
 	"gitlab.com/kaushikayanam/base/infrastructure/sqldb"
+	"gitlab.com/kaushikayanam/base/interfaces/httpsrvr"
 )
 
 type Config struct {
-	Server                  common.ServerConfig `mapstructure:"server"`
-	PlatformConfig          PlatformConfig      `mapstructure:"platform"`
-	isInitialized           bool
-	httpMiddlewareProviders []base.MiddlewareProvider
+	Server         common.ServerConfig `mapstructure:"server"`
+	PlatformConfig PlatformConfig      `mapstructure:"platform"`
+	isInitialized  bool
 }
 
 func (cfg *Config) Init() {
 	cfg.isInitialized = true
+	httpsrvr.Middlewares = cfg.getHttpMiddlewares()
 	cfg.initsql()
 }
 
