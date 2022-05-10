@@ -5,15 +5,12 @@ import (
 )
 
 type ServerConfig struct {
-	Host        string            `mapstructure:"host"`
-	Port        int               `mapstructure:"port"`
-	ApiPrefix   string            `mapstructure:"apiPrefix"`
 	Persistence PersistenceConfig `mapstructure:"persistence"`
 	Http        HttpConfig        `mapstructure:"http"`
 }
 
 func (s ServerConfig) Address() string {
-	return fmt.Sprintf("%s:%d", s.Host, s.Port)
+	return fmt.Sprintf("%s:%d", s.Http.Host, s.Http.Port)
 }
 
 func (s ServerConfig) SqlVendor() string {
@@ -25,5 +22,8 @@ type PersistenceConfig struct {
 }
 
 type HttpConfig struct {
+	Host               string   `mapstructure:"host"`
+	Port               int      `mapstructure:"port"`
+	ApiPrefix          string   `mapstructure:"apiPrefix"`
 	CorsAllowedOrigins []string `mapstructure:"corsAllowedOrigins"`
 }
