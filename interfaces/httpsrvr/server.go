@@ -24,9 +24,9 @@ var (
 )
 
 func RunHTTPServer(addr string, createHandler func(router chi.Router) http.Handler,
-	middlewares []func(http.Handler) http.Handler, allowedAddresses []string, apiPrefix string) {
+	middlewares []func(http.Handler) http.Handler, allowedOrigins []string, apiPrefix string) {
 
-	updateCorsAllowedAddresses(allowedAddresses)
+	updateCorsAllowedOrigins(allowedOrigins)
 
 	apiRouter := chi.NewRouter()
 
@@ -43,8 +43,8 @@ func RunHTTPServer(addr string, createHandler func(router chi.Router) http.Handl
 	_ = http.ListenAndServe(addr, rootRouter)
 }
 
-func updateCorsAllowedAddresses(addresses []string) {
-	options.AllowedOrigins = append(options.AllowedOrigins, addresses...)
+func updateCorsAllowedOrigins(origins []string) {
+	options.AllowedOrigins = append(options.AllowedOrigins, origins...)
 }
 
 func setMiddlewares(router *chi.Mux) {
