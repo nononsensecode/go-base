@@ -7,6 +7,7 @@ import (
 type ServerConfig struct {
 	Persistence PersistenceConfig `mapstructure:"persistence"`
 	Http        HttpConfig        `mapstructure:"http"`
+	Log         LogConfig         `mapstructure:"log"`
 }
 
 func (s ServerConfig) Address() string {
@@ -26,4 +27,8 @@ type HttpConfig struct {
 	Port               int      `mapstructure:"port"`
 	ApiPrefix          string   `mapstructure:"apiPrefix"`
 	CorsAllowedOrigins []string `mapstructure:"corsAllowedOrigins"`
+}
+
+type LogConfig struct {
+	Level string `mapstructure:"level"`
 }

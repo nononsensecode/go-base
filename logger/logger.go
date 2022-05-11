@@ -19,24 +19,21 @@ var (
 	}
 )
 
-func Init(opts *LogrusOptions) {
-	if opts == nil {
-		opts = options
-	}
+func Init(level string) {
 
 	var logLevel logrus.Level
 	var err error
-	if logLevel, err = logrus.ParseLevel(opts.LogLevel); err != nil {
+	if logLevel, err = logrus.ParseLevel(level); err != nil {
 		panic(fmt.Errorf("invalid log level: %w", err))
 	}
 
 	logrus.SetFormatter(&logrus.JSONFormatter{
 		FieldMap: logrus.FieldMap{
-			logrus.FieldKeyMsg:   opts.MessageKeyName,
-			logrus.FieldKeyLevel: opts.LevelKeyName,
-			logrus.FieldKeyTime:  opts.TimeKeyName,
-			logrus.FieldKeyFunc:  opts.FuncKeyName,
-			logrus.FieldKeyFile:  opts.FileKeyName,
+			logrus.FieldKeyMsg:   options.MessageKeyName,
+			logrus.FieldKeyLevel: options.LevelKeyName,
+			logrus.FieldKeyTime:  options.TimeKeyName,
+			logrus.FieldKeyFunc:  options.FuncKeyName,
+			logrus.FieldKeyFile:  options.FileKeyName,
 		},
 	})
 

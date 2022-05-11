@@ -13,6 +13,7 @@ import (
 	"gitlab.com/kaushikayanam/base/configs/local"
 	"gitlab.com/kaushikayanam/base/infrastructure/sqldb"
 	"gitlab.com/kaushikayanam/base/interfaces/httpsrvr"
+	"gitlab.com/kaushikayanam/base/logger"
 )
 
 type Config struct {
@@ -26,6 +27,7 @@ func (cfg *Config) Init() {
 	cfg.isInitialized = true
 	httpsrvr.Middlewares = cfg.getHttpMiddlewares()
 	cfg.initsql()
+	cfg.InitLogger()
 }
 
 func (cfg *Config) InitSqlDriver() (d driver.Driver, err error) {
@@ -74,6 +76,10 @@ func (cfg *Config) initsql() {
 	}
 
 	sqldb.Init(connProviders)
+}
+
+func (cfg *Config) InitLogger() {
+	logger.Init(cfg.Server.Log.Level)
 }
 
 type PlatformConfig struct {
