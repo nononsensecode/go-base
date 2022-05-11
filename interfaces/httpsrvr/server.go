@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/sirupsen/logrus"
+	"gitlab.com/kaushikayanam/base/logs"
 )
 
 var (
@@ -50,6 +51,7 @@ func updateCorsAllowedOrigins(origins []string) {
 func setMiddlewares(router *chi.Mux) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
+	router.Use(logs.NewBaseHttpLogger(logrus.StandardLogger()))
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Timeout(60 * time.Second))
 
