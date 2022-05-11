@@ -5,6 +5,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 
+	"github.com/sirupsen/logrus"
 	"gitlab.com/kaushikayanam/base"
 	"gitlab.com/kaushikayanam/base/context/ctxtypes"
 )
@@ -46,6 +47,10 @@ func GetConnector(ctx context.Context) (c driver.Connector, err error) {
 	}
 
 	if c, ok = connectors[vendor][clientId]; !ok {
+		logrus.WithFields(logrus.Fields{
+			"platform": vendor,
+			"clientId": clientId,
+		}).Debug("As there is no connection, creating new one")
 		c, err = provider.NewConnector(ctx)
 		if err != nil {
 			return
@@ -53,5 +58,10 @@ func GetConnector(ctx context.Context) (c driver.Connector, err error) {
 		connectors[vendor] = make(map[string]driver.Connector)
 		connectors[vendor][clientId] = c
 	}
+	logrus.WithFields(logrus.Fields{
+		"platform": vendor,
+		"clientId": clientId,
+	}).Debug("connection retrieved successfully")
+
 	return
 }
