@@ -79,7 +79,7 @@ func (cfg *Config) initsql() {
 }
 
 func (cfg *Config) InitLogger() {
-	logs.Init(cfg.Server.Log.Level)
+	logs.Init(cfg.Server.Log.Level, cfg.Server.Log.IsDev)
 }
 
 type PlatformConfig struct {
