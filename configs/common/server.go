@@ -31,4 +31,5 @@ type HttpConfig struct {
 
 type LogConfig struct {
 	Level string `mapstructure:"level"`
+	IsDev bool   `mapstructure:"isDev"`
 }

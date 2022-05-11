@@ -1,4 +1,4 @@
-package logger
+package logs
 
 type LogrusOptions struct {
 	TimestampFormat string

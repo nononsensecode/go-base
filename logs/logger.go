@@ -1,10 +1,11 @@
-package logger
+package logs
 
 import (
 	"fmt"
 	"time"
 
 	"github.com/sirupsen/logrus"
+	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 )
 
 var (
@@ -19,7 +20,7 @@ var (
 	}
 )
 
-func Init(level string) {
+func Init(level string, isDev bool) {
 
 	var logLevel logrus.Level
 	var err error
@@ -36,6 +37,12 @@ func Init(level string) {
 			logrus.FieldKeyFile:  options.FileKeyName,
 		},
 	})
+
+	if isDev {
+		logrus.SetFormatter(&prefixed.TextFormatter{
+			ForceFormatting: true,
+		})
+	}
 
 	logrus.SetLevel(logLevel)
 }

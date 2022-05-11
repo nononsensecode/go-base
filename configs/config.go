@@ -13,7 +13,7 @@ import (
 	"gitlab.com/kaushikayanam/base/configs/local"
 	"gitlab.com/kaushikayanam/base/infrastructure/sqldb"
 	"gitlab.com/kaushikayanam/base/interfaces/httpsrvr"
-	"gitlab.com/kaushikayanam/base/logger"
+	"gitlab.com/kaushikayanam/base/logs"
 )
 
 type Config struct {
@@ -79,7 +79,7 @@ func (cfg *Config) initsql() {
 }
 
 func (cfg *Config) InitLogger() {
-	logger.Init(cfg.Server.Log.Level)
+	logs.Init(cfg.Server.Log.Level)
 }
 
 type PlatformConfig struct {
