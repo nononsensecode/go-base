@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
-	"gitlab.com/kaushikayanam/base"
+	"github.com/nononsensecode/base"
 )
 
 type AWSConfig struct {

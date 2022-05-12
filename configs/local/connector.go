@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	"gitlab.com/kaushikayanam/base/context/ctxtypes"
+	"github.com/nononsensecode/base/context/ctxtypes"
 )
 
 type Connector struct {

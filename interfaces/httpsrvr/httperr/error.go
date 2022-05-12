@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
+	"github.com/nononsensecode/base/errors"
+	"github.com/nononsensecode/base/logs"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/kaushikayanam/base/errors"
-	"gitlab.com/kaushikayanam/base/logs"
 )
 
 func RespondWithApiError(err error, w http.ResponseWriter, r *http.Request) {

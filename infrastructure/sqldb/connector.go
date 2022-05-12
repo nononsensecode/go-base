@@ -5,9 +5,9 @@ import (
 	"database/sql/driver"
 	"fmt"
 
+	"github.com/nononsensecode/base"
+	"github.com/nononsensecode/base/context/ctxtypes"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/kaushikayanam/base"
-	"gitlab.com/kaushikayanam/base/context/ctxtypes"
 )
 
 var (
