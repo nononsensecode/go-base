@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"gitlab.com/kaushikayanam/base/context/ctxtypes"
+	"github.com/nononsensecode/go-base/context/ctxtypes"
 )
 
 func (c *Config) setCloudPlatform(next http.Handler) http.Handler {

@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
-	"github.com/nononsensecode/base/errors"
-	"github.com/nononsensecode/base/logs"
+	"github.com/nononsensecode/go-base/errors"
+	"github.com/nononsensecode/go-base/logs"
 	"github.com/sirupsen/logrus"
 )
 

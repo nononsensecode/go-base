@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
-	"github.com/nononsensecode/base/logs"
+	"github.com/nononsensecode/go-base/logs"
 	"github.com/sirupsen/logrus"
 )
 

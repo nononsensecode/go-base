@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/nononsensecode/base/context/ctxtypes"
+	"github.com/nononsensecode/go-base/context/ctxtypes"
 )
 
 type Connector struct {

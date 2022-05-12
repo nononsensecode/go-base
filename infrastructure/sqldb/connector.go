@@ -5,8 +5,8 @@ import (
 	"database/sql/driver"
 	"fmt"
 
-	"github.com/nononsensecode/base"
-	"github.com/nononsensecode/base/context/ctxtypes"
+	"github.com/nononsensecode/go-base"
+	"github.com/nononsensecode/go-base/context/ctxtypes"
 	"github.com/sirupsen/logrus"
 )
 

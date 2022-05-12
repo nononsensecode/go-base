@@ -7,13 +7,13 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/mattn/go-sqlite3"
 	"github.com/mitchellh/mapstructure"
-	"github.com/nononsensecode/base"
-	"github.com/nononsensecode/base/configs/aws"
-	"github.com/nononsensecode/base/configs/common"
-	"github.com/nononsensecode/base/configs/local"
-	"github.com/nononsensecode/base/infrastructure/sqldb"
-	"github.com/nononsensecode/base/interfaces/httpsrvr"
-	"github.com/nononsensecode/base/logs"
+	"github.com/nononsensecode/go-base"
+	"github.com/nononsensecode/go-base/configs/aws"
+	"github.com/nononsensecode/go-base/configs/common"
+	"github.com/nononsensecode/go-base/configs/local"
+	"github.com/nononsensecode/go-base/infrastructure/sqldb"
+	"github.com/nononsensecode/go-base/interfaces/httpsrvr"
+	"github.com/nononsensecode/go-base/logs"
 )
 
 type Config struct {

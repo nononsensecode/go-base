@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/nononsensecode/base"
+	"github.com/nononsensecode/go-base"
 )
 
 type LocalConfig struct {
