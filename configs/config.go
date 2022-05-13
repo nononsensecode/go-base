@@ -24,9 +24,6 @@ type Config struct {
 func (cfg *Config) Init() {
 	cfg.isInitialized = true
 	httpsrvr.Middlewares = cfg.getHttpMiddlewares()
-	if err := cfg.Server.Init(); err != nil {
-		panic(fmt.Errorf("common configuration initialization failed: %w", err))
-	}
 	cfg.initsql()
 	cfg.initLogger()
 }
@@ -35,9 +32,13 @@ func (cfg *Config) initsql() {
 	var (
 		connProviders []base.ConnectorProvider
 		d             driver.Driver
+		err           error
 	)
 
-	d = cfg.Server.Persistence.SqlDriver()
+	d, err = cfg.Server.Persistence.SqlInit()
+	if err != nil {
+		panic(err)
+	}
 
 	switch cfg.PlatformConfig.Name {
 	case "local":
