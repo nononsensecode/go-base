@@ -68,7 +68,7 @@ func GetConnector(ctx context.Context) (c driver.Connector, err error) {
 	return
 }
 
-func GetConnection(ctx context.Context, dbType DbType) (db *sqlx.DB, err error) {
+func GetConnection(ctx context.Context, dbType string) (db *sqlx.DB, err error) {
 	var d driver.Connector
 	d, err = GetConnector(ctx)
 
@@ -76,6 +76,6 @@ func GetConnection(ctx context.Context, dbType DbType) (db *sqlx.DB, err error) 
 		return
 	}
 
-	db = sqlx.NewDb(sql.OpenDB(d), dbType.String())
+	db = sqlx.NewDb(sql.OpenDB(d), dbType)
 	return
 }
