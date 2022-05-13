@@ -22,8 +22,8 @@ func (s ServerConfig) Init() error {
 	return s.Persistence.init()
 }
 
-func (s ServerConfig) Address() string {
-	return fmt.Sprintf("%s:%d", s.Http.Host, s.Http.Port)
+func (h HttpConfig) Address() string {
+	return fmt.Sprintf("%s:%d", h.Host, h.Port)
 }
 
 func (pc PersistenceConfig) SqlDbType() sqldb.DbType {
