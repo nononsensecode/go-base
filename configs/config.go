@@ -4,8 +4,6 @@ import (
 	"database/sql/driver"
 	"fmt"
 
-	"github.com/go-sql-driver/mysql"
-	"github.com/mattn/go-sqlite3"
 	"github.com/mitchellh/mapstructure"
 	"github.com/nononsensecode/go-base"
 	"github.com/nononsensecode/go-base/configs/aws"
@@ -26,33 +24,20 @@ type Config struct {
 func (cfg *Config) Init() {
 	cfg.isInitialized = true
 	httpsrvr.Middlewares = cfg.getHttpMiddlewares()
-	cfg.initsql()
-	cfg.InitLogger()
-}
-
-func (cfg *Config) InitSqlDriver() (d driver.Driver, err error) {
-	switch cfg.Server.SqlVendor() {
-	case "mysql":
-		d = mysql.MySQLDriver{}
-		return
-	case "sqlite":
-		d = &sqlite3.SQLiteDriver{}
-	default:
-		err = fmt.Errorf("there is no sql driver named %s", cfg.Server.SqlVendor())
+	if err := cfg.Server.Init(); err != nil {
+		panic(fmt.Errorf("common configuration initialization failed: %w", err))
 	}
-	return
+	cfg.initsql()
+	cfg.initLogger()
 }
 
 func (cfg *Config) initsql() {
 	var (
 		connProviders []base.ConnectorProvider
 		d             driver.Driver
-		err           error
 	)
 
-	if d, err = cfg.InitSqlDriver(); err != nil {
-		panic(err)
-	}
+	d = cfg.Server.Persistence.SqlDriver()
 
 	switch cfg.PlatformConfig.Name {
 	case "local":
@@ -78,7 +63,7 @@ func (cfg *Config) initsql() {
 	sqldb.Init(connProviders)
 }
 
-func (cfg *Config) InitLogger() {
+func (cfg *Config) initLogger() {
 	logs.Init(cfg.Server.Log.Level, cfg.Server.Log.IsDev)
 }
 
