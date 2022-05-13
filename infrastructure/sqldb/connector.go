@@ -2,9 +2,11 @@ package sqldb
 
 import (
 	"context"
+	"database/sql"
 	"database/sql/driver"
 	"fmt"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/nononsensecode/go-base"
 	"github.com/nononsensecode/go-base/context/ctxtypes"
 	"github.com/sirupsen/logrus"
@@ -63,5 +65,17 @@ func GetConnector(ctx context.Context) (c driver.Connector, err error) {
 		"clientId": clientId,
 	}).Debug("connection retrieved successfully")
 
+	return
+}
+
+func GetConnection(ctx context.Context, dbType DbType) (db *sqlx.DB, err error) {
+	var d driver.Connector
+	d, err = GetConnector(ctx)
+
+	if err != nil {
+		return
+	}
+
+	db = sqlx.NewDb(sql.OpenDB(d), dbType.String())
 	return
 }
