@@ -1,10 +1,13 @@
 package common
 
 import (
+	"context"
+	"database/sql"
 	"database/sql/driver"
 	"fmt"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"github.com/mattn/go-sqlite3"
 	"github.com/nononsensecode/go-base/infrastructure/sqldb"
 )
@@ -48,6 +51,12 @@ func (pc *PersistenceConfig) SqlInit() (d driver.Driver, err error) {
 	return
 }
 
+func (pc PersistenceConfig) ConnectionProvider() sqldb.ConnectionProvider {
+	return ConnectionProviderImpl{
+		dbType: pc.dbType,
+	}
+}
+
 type HttpConfig struct {
 	Host               string   `mapstructure:"host"`
 	Port               int      `mapstructure:"port"`
@@ -58,4 +67,19 @@ type HttpConfig struct {
 type LogConfig struct {
 	Level string `mapstructure:"level"`
 	IsDev bool   `mapstructure:"isDev"`
+}
+
+type ConnectionProviderImpl struct {
+	dbType sqldb.DbType
+}
+
+func (p ConnectionProviderImpl) GetConnection(ctx context.Context) (db *sqlx.DB, err error) {
+	var d driver.Connector
+	d, err = sqldb.GetConnector(ctx)
+	if err != nil {
+		return
+	}
+
+	db = sqlx.NewDb(sql.OpenDB(d), p.dbType.String())
+	return
 }
