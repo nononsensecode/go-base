@@ -43,26 +43,26 @@ func (pc *PersistenceConfig) init() (err error) {
 		return
 	}
 
-	pc.driver, err = pc.initSqlDriver()
-	if err != nil {
+	if err = pc.initSqlDriver(); err != nil {
 		return
 	}
 
 	return
 }
 
-func (pc PersistenceConfig) initSqlDriver() (d driver.Driver, err error) {
+func (pc *PersistenceConfig) initSqlDriver() (err error) {
 	switch pc.dbType.String() {
 	case "mysql":
 		fmt.Println("configured sql driver is \"mysql\"")
-		d = mysql.MySQLDriver{}
+		pc.driver = mysql.MySQLDriver{}
 		return
 	case "sqllite":
 		fmt.Printf("configured sql driver is \"sqllite\"")
-		d = &sqlite3.SQLiteDriver{}
+		pc.driver = &sqlite3.SQLiteDriver{}
 	default:
 		err = fmt.Errorf("there is no sql driver named \"%s\"", pc.dbType.String())
 	}
+
 	return
 }
 
