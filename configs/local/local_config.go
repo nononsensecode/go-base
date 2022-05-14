@@ -1,10 +1,10 @@
 package local
 
 import (
+	"database/sql"
 	"database/sql/driver"
 	"net/http"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/nononsensecode/go-base"
 )
 
@@ -24,10 +24,10 @@ func (l *LocalConfig) ConnectorProvider() (pName string, p base.ConnectorProvide
 func (l *LocalConfig) InitDB(d driver.Driver) {
 	var (
 		err      error
-		clientDb *sqlx.DB
+		clientDb *sql.DB
 	)
 
-	clientDb, err = sqlx.Open("mysql", l.ClientRepoConfig.dsn())
+	clientDb, err = sql.Open("mysql", l.ClientRepoConfig.dsn())
 	if err != nil {
 		panic(err)
 	}

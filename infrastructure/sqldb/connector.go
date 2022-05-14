@@ -6,7 +6,6 @@ import (
 	"database/sql/driver"
 	"fmt"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/nononsensecode/go-base"
 	"github.com/nononsensecode/go-base/context/ctxtypes"
 	"github.com/sirupsen/logrus"
@@ -68,7 +67,7 @@ func GetConnector(ctx context.Context) (c driver.Connector, err error) {
 	return
 }
 
-func GetConnection(ctx context.Context, dbType string) (db *sqlx.DB, err error) {
+func GetConnection(ctx context.Context) (db *sql.DB, err error) {
 	var d driver.Connector
 	d, err = GetConnector(ctx)
 
@@ -76,6 +75,6 @@ func GetConnection(ctx context.Context, dbType string) (db *sqlx.DB, err error) 
 		return
 	}
 
-	db = sqlx.NewDb(sql.OpenDB(d), dbType)
+	db = sql.OpenDB(d)
 	return
 }

@@ -1,16 +1,15 @@
 package local
 
 import (
+	"database/sql"
 	"fmt"
-
-	"github.com/jmoiron/sqlx"
 )
 
 type ClientRepository struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
-func NewClientRepository(db *sqlx.DB) *ClientRepository {
+func NewClientRepository(db *sql.DB) *ClientRepository {
 	if db == nil {
 		panic("client db is nil")
 	}
@@ -19,7 +18,8 @@ func NewClientRepository(db *sqlx.DB) *ClientRepository {
 }
 
 func (c *ClientRepository) GetDsnByClientId(id string) (dsn string, err error) {
-	err = c.db.Get(&dsn, "SELECT dsn FROM auth_user_client WHERE id = ?", id)
+	row := c.db.QueryRow("SELECT dsn FROM auth_user_client WHERE id = ?", id)
+	err = row.Scan(&dsn)
 	return
 }
 

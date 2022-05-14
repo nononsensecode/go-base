@@ -10,7 +10,6 @@ require (
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/render v1.0.1
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/jmoiron/sqlx v1.3.5
 	github.com/mattn/go-sqlite3 v1.14.12
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/sirupsen/logrus v1.8.1

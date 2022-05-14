@@ -7,7 +7,6 @@ import (
 	"fmt"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
 	"github.com/mattn/go-sqlite3"
 	"github.com/nononsensecode/go-base/infrastructure/sqldb"
 )
@@ -73,13 +72,13 @@ type ConnectionProviderImpl struct {
 	dbType sqldb.DbType
 }
 
-func (p ConnectionProviderImpl) GetConnection(ctx context.Context) (db *sqlx.DB, err error) {
+func (p ConnectionProviderImpl) GetConnection(ctx context.Context) (db *sql.DB, err error) {
 	var d driver.Connector
 	d, err = sqldb.GetConnector(ctx)
 	if err != nil {
 		return
 	}
 
-	db = sqlx.NewDb(sql.OpenDB(d), p.dbType.String())
+	db = sql.OpenDB(d)
 	return
 }

@@ -2,10 +2,9 @@ package sqldb
 
 import (
 	"context"
-
-	"github.com/jmoiron/sqlx"
+	"database/sql"
 )
 
 type ConnectionProvider interface {
-	GetConnection(ctx context.Context) (*sqlx.DB, error)
+	GetConnection(ctx context.Context) (*sql.DB, error)
 }

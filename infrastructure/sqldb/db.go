@@ -1,13 +1,13 @@
 package sqldb
 
 import (
+	"database/sql"
 	"fmt"
 
-	"github.com/jmoiron/sqlx"
 	"go.uber.org/multierr"
 )
 
-func FinishTransaction(tx *sqlx.Tx, err error) error {
+func FinishTransaction(tx *sql.Tx, err error) error {
 	if err != nil {
 		if rollbackErr := tx.Rollback(); rollbackErr != nil {
 			rollbackErr = fmt.Errorf("rolling back failed: %w", rollbackErr)
