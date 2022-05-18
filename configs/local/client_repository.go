@@ -20,6 +20,14 @@ func NewClientRepository(db *sql.DB) *ClientRepository {
 func (c *ClientRepository) GetDsnByClientId(id string) (dsn string, err error) {
 	row := c.db.QueryRow("SELECT dsn FROM auth_user_client WHERE id = ?", id)
 	err = row.Scan(&dsn)
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			err = fmt.Errorf("there is no client found with client id \"%s\"", id)
+		default:
+			return
+		}
+	}
 	return
 }
 

@@ -2,12 +2,35 @@ package local
 
 import (
 	"context"
+	"database/sql"
 	"database/sql/driver"
 	"fmt"
 	"sync"
 
+	"github.com/nononsensecode/go-base"
 	"github.com/nononsensecode/go-base/context/ctxtypes"
 )
+
+func (l *LocalConfig) SqlConnectorProvider() (pName string, p base.SqlConnectorProvider) {
+	pName = "local"
+	p = l
+	return
+}
+
+func (l *LocalConfig) InitSqlDB(d driver.Driver) {
+	var (
+		err      error
+		clientDb *sql.DB
+	)
+
+	clientDb, err = sql.Open("mysql", l.ClientRepoConfig.dsn())
+	if err != nil {
+		panic(err)
+	}
+
+	l.clientRepo = NewClientRepository(clientDb)
+	l.d = d
+}
 
 type Connector struct {
 	cId string
@@ -35,9 +58,9 @@ func (c *Connector) Driver() driver.Driver {
 	return c.d
 }
 
-func (l *LocalConfig) NewConnector(ctx context.Context) (d driver.Connector, err error) {
-	if l.clientRepo == nil {
-		err = fmt.Errorf("client repo is not initialized")
+func (l *LocalConfig) NewSqlConnector(ctx context.Context) (d driver.Connector, err error) {
+	err = l.isInitialized()
+	if err != nil {
 		return
 	}
 

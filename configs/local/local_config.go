@@ -1,11 +1,9 @@
 package local
 
 import (
-	"database/sql"
 	"database/sql/driver"
+	"fmt"
 	"net/http"
-
-	"github.com/nononsensecode/go-base"
 )
 
 type LocalConfig struct {
@@ -15,28 +13,9 @@ type LocalConfig struct {
 	httpMiddlewares  []func(http.Handler) http.Handler
 }
 
-func (l *LocalConfig) ConnectorProvider() (pName string, p base.ConnectorProvider) {
-	pName = "local"
-	p = l
-	return
-}
-
-func (l *LocalConfig) InitDB(d driver.Driver) {
-	var (
-		err      error
-		clientDb *sql.DB
-	)
-
-	clientDb, err = sql.Open("mysql", l.ClientRepoConfig.dsn())
-	if err != nil {
-		panic(err)
+func (l *LocalConfig) isInitialized() (err error) {
+	if l.clientRepo == nil {
+		err = fmt.Errorf("local configuration is not initialized")
 	}
-
-	l.clientRepo = NewClientRepository(clientDb)
-	l.d = d
-}
-
-// For future use
-func (l *LocalConfig) GetMiddlewares() []func(http.Handler) http.Handler {
-	return l.httpMiddlewares
+	return
 }

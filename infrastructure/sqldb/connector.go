@@ -12,23 +12,23 @@ import (
 )
 
 var (
-	connProviders map[string]base.ConnectorProvider
-	connectors    map[string]map[string]driver.Connector
+	sqlConnProviders map[string]base.SqlConnectorProvider
+	sqlConnectors    map[string]map[string]driver.Connector
 )
 
-func Init(providers []base.ConnectorProvider) {
-	connProviders = make(map[string]base.ConnectorProvider)
-	connectors = make(map[string]map[string]driver.Connector)
+func Init(providers []base.SqlConnectorProvider) {
+	sqlConnProviders = make(map[string]base.SqlConnectorProvider)
+	sqlConnectors = make(map[string]map[string]driver.Connector)
 	for _, p := range providers {
-		name, provider := p.ConnectorProvider()
-		connProviders[name] = provider
+		name, provider := p.SqlConnectorProvider()
+		sqlConnProviders[name] = provider
 	}
 }
 
-func GetConnector(ctx context.Context) (c driver.Connector, err error) {
+func GetSqlConnector(ctx context.Context) (c driver.Connector, err error) {
 	var (
 		vendor   string
-		provider base.ConnectorProvider
+		provider base.SqlConnectorProvider
 		clientId string
 		ok       bool
 	)
@@ -42,34 +42,34 @@ func GetConnector(ctx context.Context) (c driver.Connector, err error) {
 		return
 	}
 
-	if provider, ok = connProviders[vendor]; !ok {
+	if provider, ok = sqlConnProviders[vendor]; !ok {
 		err = fmt.Errorf("there is no cloud provider %s", vendor)
 		return
 	}
 
-	if c, ok = connectors[vendor][clientId]; !ok {
+	if c, ok = sqlConnectors[vendor][clientId]; !ok {
 		logrus.WithFields(logrus.Fields{
-			"platform": vendor,
-			"clientId": clientId,
+			"cloudPlatform": vendor,
+			"clientId":      clientId,
 		}).Debug("As there is no connection, creating new one")
-		c, err = provider.NewConnector(ctx)
+		c, err = provider.NewSqlConnector(ctx)
 		if err != nil {
 			return
 		}
-		connectors[vendor] = make(map[string]driver.Connector)
-		connectors[vendor][clientId] = c
+		sqlConnectors[vendor] = make(map[string]driver.Connector)
+		sqlConnectors[vendor][clientId] = c
 	}
 	logrus.WithFields(logrus.Fields{
 		"platform": vendor,
 		"clientId": clientId,
-	}).Debug("connection retrieved successfully")
+	}).Debug("sql connection retrieved successfully")
 
 	return
 }
 
 func GetConnection(ctx context.Context) (db *sql.DB, err error) {
 	var d driver.Connector
-	d, err = GetConnector(ctx)
+	d, err = GetSqlConnector(ctx)
 
 	if err != nil {
 		return
