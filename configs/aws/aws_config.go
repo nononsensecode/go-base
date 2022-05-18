@@ -11,6 +11,8 @@ import (
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
 )
 
+var configName = "aws"
+
 type AWSConfig struct {
 	MaxCacheSize    int   `mapstructure:"maxCacheSize"`
 	CacheItemTTL    int64 `mapstructure:"cacheItemTTL"`

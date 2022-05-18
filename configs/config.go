@@ -30,7 +30,7 @@ func (cfg *Config) Init() {
 
 func (cfg *Config) initsql() {
 	var (
-		connProviders []base.ConnectorProvider
+		connProviders []base.SqlConnectorProvider
 		d             driver.Driver
 		err           error
 	)
@@ -46,7 +46,7 @@ func (cfg *Config) initsql() {
 		if err := mapstructure.Decode(cfg.PlatformConfig.Config, &lcfg); err != nil {
 			panic(err)
 		}
-		lcfg.InitDB(d)
+		lcfg.InitSqlDB(d)
 		connProviders = append(connProviders, &lcfg)
 		cfg.httpMiddlewareProviders = append(cfg.httpMiddlewareProviders, &lcfg)
 	case "aws":
@@ -54,7 +54,7 @@ func (cfg *Config) initsql() {
 		if err := mapstructure.Decode(cfg.PlatformConfig.Config, &acfg); err != nil {
 			panic(err)
 		}
-		acfg.InitDB(d)
+		acfg.InitSqlDB(d)
 		connProviders = append(connProviders, &acfg)
 		cfg.httpMiddlewareProviders = append(cfg.httpMiddlewareProviders, &acfg)
 	default:

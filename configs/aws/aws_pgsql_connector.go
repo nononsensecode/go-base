@@ -2,6 +2,7 @@ package aws
 
 import (
 	"context"
+	"sync"
 
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -24,12 +25,13 @@ func (a *AWSConfig) NewPgSqlPoolConnector(ctx context.Context) (connector base.P
 	connector = &AWSPgSqlPoolConnector{
 		c:          a.cache,
 		secretName: secretName,
+		m:          &sync.Mutex{},
 	}
 	return
 }
 
 func (a *AWSConfig) PgSqlPoolConnectorProvider() (pName string, provider base.PgSqlPoolConnectorProvider) {
-	pName = "aws"
+	pName = configName
 	provider = a
 	return
 }
@@ -37,9 +39,13 @@ func (a *AWSConfig) PgSqlPoolConnectorProvider() (pName string, provider base.Pg
 type AWSPgSqlPoolConnector struct {
 	c          *secretcache.Cache
 	secretName string
+	m          *sync.Mutex
 }
 
 func (c *AWSPgSqlPoolConnector) GetPgSqlPool(ctx context.Context) (pool *pgxpool.Pool, err error) {
+	c.m.Lock()
+	defer c.m.Unlock()
+
 	var dbConfig DbConfig
 
 	dbConfig, err = getDbConfig(c.c, c.secretName)

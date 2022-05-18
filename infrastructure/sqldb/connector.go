@@ -47,22 +47,31 @@ func GetSqlConnector(ctx context.Context) (c driver.Connector, err error) {
 		return
 	}
 
-	if c, ok = sqlConnectors[vendor][clientId]; !ok {
+	if c, ok = sqlConnectors[vendor][clientId]; ok {
 		logrus.WithFields(logrus.Fields{
-			"cloudPlatform": vendor,
-			"clientId":      clientId,
-		}).Debug("As there is no connection, creating new one")
-		c, err = provider.NewSqlConnector(ctx)
-		if err != nil {
-			return
-		}
-		sqlConnectors[vendor] = make(map[string]driver.Connector)
-		sqlConnectors[vendor][clientId] = c
+			"platform": vendor,
+			"clientId": clientId,
+		}).Debug("sql connection retrieved successfully")
+
+		return
 	}
+
+	logrus.WithFields(logrus.Fields{
+		"cloudPlatform": vendor,
+		"clientId":      clientId,
+	}).Debug("As there is no connection, creating new one")
+
+	c, err = provider.NewSqlConnector(ctx)
+	if err != nil {
+		return
+	}
+	sqlConnectors[vendor] = make(map[string]driver.Connector)
+	sqlConnectors[vendor][clientId] = c
+
 	logrus.WithFields(logrus.Fields{
 		"platform": vendor,
 		"clientId": clientId,
-	}).Debug("sql connection retrieved successfully")
+	}).Debug("sql connection created and retrieved successfully")
 
 	return
 }

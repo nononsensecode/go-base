@@ -50,8 +50,8 @@ func (pc *PersistenceConfig) SqlInit() (d driver.Driver, err error) {
 	return
 }
 
-func (pc PersistenceConfig) ConnectionProvider() sqldb.ConnectionProvider {
-	return ConnectionProviderImpl{
+func (pc PersistenceConfig) ConnectionProvider() sqldb.SqlConnectionProvider {
+	return SqlConnectionProviderImpl{
 		dbType: pc.dbType,
 	}
 }
@@ -68,13 +68,13 @@ type LogConfig struct {
 	IsDev bool   `mapstructure:"isDev"`
 }
 
-type ConnectionProviderImpl struct {
+type SqlConnectionProviderImpl struct {
 	dbType sqldb.DbType
 }
 
-func (p ConnectionProviderImpl) GetConnection(ctx context.Context) (db *sql.DB, err error) {
+func (p SqlConnectionProviderImpl) GetSqlConnection(ctx context.Context) (db *sql.DB, err error) {
 	var d driver.Connector
-	d, err = sqldb.GetConnector(ctx)
+	d, err = sqldb.GetSqlConnector(ctx)
 	if err != nil {
 		return
 	}

@@ -60,7 +60,7 @@ func (a *AWSConfig) NewSqlConnector(ctx context.Context) (conn driver.Connector,
 }
 
 func (a *AWSConfig) SqlConnectorProvider() (pName string, p base.SqlConnectorProvider) {
-	pName = "aws"
+	pName = configName
 	p = a
 	return
 }

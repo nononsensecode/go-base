@@ -47,23 +47,31 @@ func GetPgSqlConnectionPoolConnector(ctx context.Context) (connector base.PgSqlP
 		return
 	}
 
-	if connector, ok = pgsqlPoolConnectors[cloudVendor][clientId]; !ok {
+	if connector, ok = pgsqlPoolConnectors[cloudVendor][clientId]; ok {
 		logrus.WithFields(logrus.Fields{
 			"cloudPlatform": cloudVendor,
 			"clientId":      clientId,
-		}).Debug("As there is no connector, creating new one")
+		}).Debug("postgresql connector retrieved successfully")
 
-		connector, err = provider.NewPgSqlPoolConnector(ctx)
-		if err != nil {
-			return
-		}
-
-		pgsqlPoolConnectors[cloudVendor] = make(map[string]base.PgSqlPoolConnector)
-		pgsqlPoolConnectors[cloudVendor][clientId] = connector
+		return
 	}
+
 	logrus.WithFields(logrus.Fields{
 		"cloudPlatform": cloudVendor,
 		"clientId":      clientId,
-	}).Debug("postgresql connection pool retrieved successfully")
+	}).Debug("As there is no connector, creating new one")
+
+	connector, err = provider.NewPgSqlPoolConnector(ctx)
+	if err != nil {
+		return
+	}
+
+	pgsqlPoolConnectors[cloudVendor] = make(map[string]base.PgSqlPoolConnector)
+	pgsqlPoolConnectors[cloudVendor][clientId] = connector
+
+	logrus.WithFields(logrus.Fields{
+		"cloudPlatform": cloudVendor,
+		"clientId":      clientId,
+	}).Debug("postgresql connection pool connector created and retrieved successfully")
 	return
 }
