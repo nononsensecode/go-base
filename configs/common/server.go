@@ -17,42 +17,82 @@ type ServerConfig struct {
 	Log         LogConfig         `mapstructure:"log"`
 }
 
+func (s ServerConfig) Init() (err error) {
+	if s.Http.isNil() {
+		s.Http.Port = 8080
+	}
+
+	if s.Log.isNil() {
+		s.Log.Level = "DEBUG"
+	}
+
+	if s.Persistence.SqlEnable && s.Persistence.Sql.isNil() {
+		return fmt.Errorf("sql vendor is not specified")
+	}
+
+	if err = s.Persistence.Sql.init(); err != nil {
+		return
+	}
+
+	return nil
+}
+
+func (h HttpConfig) isNil() bool {
+	return h.Port == 0
+}
+
 func (h HttpConfig) Address() string {
 	return fmt.Sprintf("%s:%d", h.Host, h.Port)
 }
 
-func (pc PersistenceConfig) SqlDbType() sqldb.DbType {
-	return pc.dbType
+func (s SqlConfig) SqlDbType() sqldb.DbType {
+	return s.dbType
 }
 
 type PersistenceConfig struct {
-	SqlVendor string `mapstructure:"sqlVendor"`
-	dbType    sqldb.DbType
+	SqlEnable   bool      `mapstructure:"sqlEnable"`
+	PgxEnable   bool      `mapstructure:"pgxEnable"`
+	MongoEnable bool      `mapstructure:"mongoEnable"`
+	Sql         SqlConfig `mapstructure:"sql"`
 }
 
-func (pc *PersistenceConfig) SqlInit() (d driver.Driver, err error) {
-	pc.dbType, err = sqldb.NewDbType(pc.SqlVendor)
+type SqlConfig struct {
+	SqlVendor string `mapstructure:"sqlVendor"`
+	dbType    sqldb.DbType
+	driver    driver.Driver
+}
+
+func (s *SqlConfig) isNil() bool {
+	return s.SqlVendor == ""
+}
+
+func (s *SqlConfig) init() (err error) {
+	s.dbType, err = sqldb.NewDbType(s.SqlVendor)
 	if err != nil {
 		return
 	}
 
-	switch pc.dbType.String() {
+	switch s.dbType.String() {
 	case "mysql":
 		fmt.Println("configured sql driver is \"mysql\"")
-		d = mysql.MySQLDriver{}
+		s.driver = mysql.MySQLDriver{}
 		return
 	case "sqllite":
 		fmt.Printf("configured sql driver is \"sqllite\"")
-		d = &sqlite3.SQLiteDriver{}
+		s.driver = &sqlite3.SQLiteDriver{}
 	default:
-		err = fmt.Errorf("there is no sql driver named \"%s\"", pc.dbType.String())
+		err = fmt.Errorf("there is no sql driver named \"%s\"", s.dbType.String())
 	}
 	return
 }
 
-func (pc PersistenceConfig) ConnectionProvider() sqldb.SqlConnectionProvider {
+func (s SqlConfig) Driver() driver.Driver {
+	return s.driver
+}
+
+func (s SqlConfig) ConnectionProvider() sqldb.SqlConnectionProvider {
 	return SqlConnectionProviderImpl{
-		dbType: pc.dbType,
+		dbType: s.dbType,
 	}
 }
 
@@ -66,6 +106,10 @@ type HttpConfig struct {
 type LogConfig struct {
 	Level string `mapstructure:"level"`
 	IsDev bool   `mapstructure:"isDev"`
+}
+
+func (l LogConfig) isNil() bool {
+	return l.Level == ""
 }
 
 type SqlConnectionProviderImpl struct {

@@ -10,7 +10,7 @@ import (
 )
 
 type Configurer interface {
-	Init()
+	Init() error
 }
 
 type MiddlewareProvider interface {

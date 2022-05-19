@@ -15,8 +15,8 @@ import (
 )
 
 type Config struct {
-	Server                  common.ServerConfig `mapstructure:"server"`
-	PlatformConfig          PlatformConfig      `mapstructure:"platform"`
+	Server                  common.ServerConfig   `mapstructure:"server"`
+	Platform                common.PlatformConfig `mapstructure:"platform"`
 	httpMiddlewareProviders []base.MiddlewareProvider
 	isInitialized           bool
 }
@@ -66,9 +66,4 @@ func (cfg *Config) initsql() {
 
 func (cfg *Config) initLogger() {
 	logs.Init(cfg.Server.Log.Level, cfg.Server.Log.IsDev)
-}
-
-type PlatformConfig struct {
-	Name   string      `mapstructure:"name"`
-	Config interface{} `mapstructure:"config"`
 }
