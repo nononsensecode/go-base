@@ -11,10 +11,6 @@ import (
 )
 
 func (a *AWSConfig) NewMongoDbClientBuilder(ctx context.Context) (builder base.MongoDbClientBuilder, err error) {
-	if err = a.isInitialized(); err != nil {
-		return
-	}
-
 	var secretName string
 	if secretName, err = getSecretName(ctx); err != nil {
 		return
@@ -29,7 +25,7 @@ func (a *AWSConfig) NewMongoDbClientBuilder(ctx context.Context) (builder base.M
 }
 
 func (a *AWSConfig) MongoDbClientBuilderProvider() (pName string, provider base.MongoDbClientBuilderProvider) {
-	pName = configName
+	pName = ConfigName
 	provider = a
 	return
 }

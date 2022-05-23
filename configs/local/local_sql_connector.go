@@ -12,7 +12,7 @@ import (
 )
 
 func (l *LocalConfig) SqlConnectorProvider() (pName string, p base.SqlConnectorProvider) {
-	pName = "local"
+	pName = ConfigName
 	p = l
 	return
 }
@@ -59,11 +59,6 @@ func (c *Connector) Driver() driver.Driver {
 }
 
 func (l *LocalConfig) NewSqlConnector(ctx context.Context) (d driver.Connector, err error) {
-	err = l.isInitialized()
-	if err != nil {
-		return
-	}
-
 	var (
 		clientId string
 		ok       bool

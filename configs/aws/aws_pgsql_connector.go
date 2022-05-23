@@ -10,11 +10,6 @@ import (
 )
 
 func (a *AWSConfig) NewPgSqlPoolConnector(ctx context.Context) (connector base.PgSqlPoolConnector, err error) {
-	err = a.isInitialized()
-	if err != nil {
-		return
-	}
-
 	var secretName string
 
 	secretName, err = getSecretName(ctx)
@@ -31,7 +26,7 @@ func (a *AWSConfig) NewPgSqlPoolConnector(ctx context.Context) (connector base.P
 }
 
 func (a *AWSConfig) PgSqlPoolConnectorProvider() (pName string, provider base.PgSqlPoolConnectorProvider) {
-	pName = configName
+	pName = ConfigName
 	provider = a
 	return
 }

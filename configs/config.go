@@ -25,7 +25,6 @@ func (cfg *Config) Init() {
 	cfg.isInitialized = true
 	httpsrvr.Middlewares = cfg.getHttpMiddlewares()
 	cfg.initsql()
-	cfg.initLogger()
 }
 
 func (cfg *Config) initsql() {
@@ -35,10 +34,11 @@ func (cfg *Config) initsql() {
 		err           error
 	)
 
-	d, err = cfg.Server.Persistence.SqlInit()
-	if err != nil {
+	if err = cfg.Server.Init(); err != nil {
 		panic(err)
 	}
+
+	d = cfg.Server.Persistence.Sql.Driver()
 
 	switch cfg.PlatformConfig.Name {
 	case "local":

@@ -39,11 +39,6 @@ func (a *AWSConfig) InitSqlDB(d driver.Driver) {
 }
 
 func (a *AWSConfig) NewSqlConnector(ctx context.Context) (conn driver.Connector, err error) {
-	err = a.isInitialized()
-	if err != nil {
-		return
-	}
-
 	var secretName string
 	secretName, err = getSecretName(ctx)
 	if err != nil {
@@ -60,7 +55,7 @@ func (a *AWSConfig) NewSqlConnector(ctx context.Context) (conn driver.Connector,
 }
 
 func (a *AWSConfig) SqlConnectorProvider() (pName string, p base.SqlConnectorProvider) {
-	pName = configName
+	pName = ConfigName
 	p = a
 	return
 }

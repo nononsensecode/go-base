@@ -31,10 +31,6 @@ func (c *LocalPgSqlPoolConnector) GetPgSqlPool(ctx context.Context) (pool *pgxpo
 }
 
 func (l *LocalConfig) NewPgSqlPoolConnector(ctx context.Context) (connector base.PgSqlPoolConnector, err error) {
-	if err = l.isInitialized(); err != nil {
-		return
-	}
-
 	var (
 		clientId string
 		ok       bool
@@ -54,7 +50,7 @@ func (l *LocalConfig) NewPgSqlPoolConnector(ctx context.Context) (connector base
 }
 
 func (l *LocalConfig) PgSqlPoolConnectorProvider() (pName string, provider base.PgSqlPoolConnectorProvider) {
-	pName = "local"
+	pName = ConfigName
 	provider = l
 	return
 }

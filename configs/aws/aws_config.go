@@ -11,7 +11,9 @@ import (
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
 )
 
-var configName = "aws"
+const (
+	ConfigName = "aws"
+)
 
 type AWSConfig struct {
 	MaxCacheSize    int   `mapstructure:"maxCacheSize"`
@@ -25,10 +27,16 @@ type DbConfig struct {
 	Dsn string `mapstructure:"dsn"`
 }
 
-func (a *AWSConfig) Init() {
-	sess, err := session.NewSession(&aws.Config{})
+func (a *AWSConfig) Init() (err error) {
+	if a.cache == nil {
+		err = fmt.Errorf("aws configuration is not initialized")
+		return
+	}
+
+	var sess *session.Session
+	sess, err = session.NewSession(&aws.Config{})
 	if err != nil {
-		panic(err)
+		return
 	}
 
 	sMgr := secretsmanager.New(sess)
@@ -41,13 +49,6 @@ func (a *AWSConfig) Init() {
 		func(c *secretcache.Cache) { c.Client = sMgr },
 	)
 	if err != nil {
-		panic(err)
-	}
-}
-
-func (a *AWSConfig) isInitialized() (err error) {
-	if a.cache == nil {
-		err = fmt.Errorf("aws configuration is not initialized")
 		return
 	}
 	return
