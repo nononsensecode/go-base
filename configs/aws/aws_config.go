@@ -9,6 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
+	"github.com/nononsensecode/go-base/infrastructure/sqldb"
+	"github.com/nononsensecode/go-base/interfaces/httpsrvr"
 )
 
 const (
@@ -27,7 +29,12 @@ type DbConfig struct {
 	Dsn string `mapstructure:"dsn"`
 }
 
-func (a *AWSConfig) Init() (err error) {
+func (a *AWSConfig) Init(sqlDriver driver.Driver) (err error) {
+	if sqlDriver == nil {
+		err = fmt.Errorf("sql driver is nil")
+		return
+	}
+
 	if a.cache == nil {
 		err = fmt.Errorf("aws configuration is not initialized")
 		return
@@ -38,6 +45,8 @@ func (a *AWSConfig) Init() (err error) {
 	if err != nil {
 		return
 	}
+
+	a.d = sqlDriver
 
 	sMgr := secretsmanager.New(sess)
 	cacheConfig := secretcache.CacheConfig{
@@ -51,5 +60,9 @@ func (a *AWSConfig) Init() (err error) {
 	if err != nil {
 		return
 	}
+
+	sqldb.Init(a)
+	httpsrvr.AddMiddlewares(a.GetMiddlewares()...)
+
 	return
 }

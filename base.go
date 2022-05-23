@@ -10,7 +10,7 @@ import (
 )
 
 type Configurer interface {
-	Init() error
+	Init(sqlDriver driver.Driver) error
 }
 
 type MiddlewareProvider interface {

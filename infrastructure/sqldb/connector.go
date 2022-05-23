@@ -16,7 +16,7 @@ var (
 	sqlConnectors    map[string]map[string]driver.Connector
 )
 
-func Init(providers []base.SqlConnectorProvider) {
+func Init(providers ...base.SqlConnectorProvider) {
 	sqlConnProviders = make(map[string]base.SqlConnectorProvider)
 	sqlConnectors = make(map[string]map[string]driver.Connector)
 	for _, p := range providers {

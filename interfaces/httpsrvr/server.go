@@ -21,8 +21,12 @@ var (
 		AllowCredentials: true,
 		MaxAge:           300,
 	}
-	Middlewares []func(http.Handler) http.Handler
+	mws []func(http.Handler) http.Handler
 )
+
+func AddMiddlewares(middlewares ...func(http.Handler) http.Handler) {
+	mws = append(mws, middlewares...)
+}
 
 func RunHTTPServer(addr string, createHandler func(router chi.Router) http.Handler,
 	middlewares []func(http.Handler) http.Handler, allowedOrigins []string, apiPrefix string) {
@@ -31,7 +35,7 @@ func RunHTTPServer(addr string, createHandler func(router chi.Router) http.Handl
 
 	apiRouter := chi.NewRouter()
 
-	Middlewares = append(Middlewares, middlewares...)
+	mws = append(mws, middlewares...)
 	setMiddlewares(apiRouter)
 
 	rootRouter := chi.NewRouter()
@@ -63,7 +67,7 @@ func setMiddlewares(router *chi.Mux) {
 	)
 	router.Use(middleware.NoCache)
 
-	for _, m := range Middlewares {
+	for _, m := range mws {
 		router.Use(m)
 	}
 }

@@ -1,6 +1,7 @@
 package common
 
 import (
+	"database/sql/driver"
 	"fmt"
 
 	"github.com/mitchellh/mapstructure"
@@ -19,7 +20,7 @@ func (p PlatformConfig) isNil() bool {
 	return p.Name == "" || p.Config == nil
 }
 
-func (p PlatformConfig) Init() (err error) {
+func (p PlatformConfig) Init(sqlDriver driver.Driver) (err error) {
 	fmt.Println("Finding correct platform....")
 	if p.isNil() {
 		return fmt.Errorf("local/cloud configuration is missing")
@@ -31,7 +32,7 @@ func (p PlatformConfig) Init() (err error) {
 	}
 
 	fmt.Printf("Initializing platform \"%s\"....\n", p.Name)
-	err = p.configurer.Init()
+	err = p.configurer.Init(sqlDriver)
 	return
 }
 
