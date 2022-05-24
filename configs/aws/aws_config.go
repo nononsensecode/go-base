@@ -30,11 +30,6 @@ type DbConfig struct {
 }
 
 func (a *AWSConfig) Init(sqlDriver driver.Driver) (err error) {
-	if sqlDriver == nil {
-		err = fmt.Errorf("sql driver is nil")
-		return
-	}
-
 	if a.cache == nil {
 		err = fmt.Errorf("aws configuration is not initialized")
 		return
@@ -45,8 +40,6 @@ func (a *AWSConfig) Init(sqlDriver driver.Driver) (err error) {
 	if err != nil {
 		return
 	}
-
-	a.d = sqlDriver
 
 	sMgr := secretsmanager.New(sess)
 	cacheConfig := secretcache.CacheConfig{
@@ -61,7 +54,11 @@ func (a *AWSConfig) Init(sqlDriver driver.Driver) (err error) {
 		return
 	}
 
-	sqldb.Init(a)
+	if sqlDriver != nil {
+		a.d = sqlDriver
+		sqldb.Init(a)
+	}
+
 	httpsrvr.AddMiddlewares(a.GetMiddlewares()...)
 
 	return

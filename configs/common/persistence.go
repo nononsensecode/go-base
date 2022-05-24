@@ -27,10 +27,13 @@ func (p *PersistenceConfig) init() (err error) {
 		return
 	}
 
-	err = p.Sql.init()
-	if err != nil {
-		return
+	if p.SqlEnable {
+		err = p.Sql.init()
+		if err != nil {
+			return
+		}
 	}
+
 	return
 }
 

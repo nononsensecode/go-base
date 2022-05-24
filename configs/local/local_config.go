@@ -24,19 +24,17 @@ type LocalConfig struct {
 
 func (l *LocalConfig) Init(sqlDriver driver.Driver) (err error) {
 	fmt.Printf("Initializing local configuration...")
-	if sqlDriver == nil {
-		err = fmt.Errorf("sql driver is nil")
-		return
-	}
 
 	err = l.initClientRepo()
 	if err != nil {
 		return
 	}
 
-	l.d = sqlDriver
+	if sqlDriver != nil {
+		l.d = sqlDriver
+		sqldb.Init(l)
+	}
 
-	sqldb.Init(l)
 	httpsrvr.AddMiddlewares(l.GetMiddlewares()...)
 
 	return
