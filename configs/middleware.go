@@ -10,7 +10,7 @@ import (
 func (c *Config) setCloudPlatform(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		ctx = context.WithValue(ctx, ctxtypes.CtxVendorKey, c.PlatformConfig.Name)
+		ctx = context.WithValue(ctx, ctxtypes.CtxVendorKey, c.Platform.Name)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(fn)
@@ -33,8 +33,5 @@ func setClientDetails(next http.Handler) http.Handler {
 func (c *Config) getHttpMiddlewares() (m []func(next http.Handler) http.Handler) {
 	m = append(m, setClientDetails)
 	m = append(m, c.setCloudPlatform)
-	for _, mp := range c.httpMiddlewareProviders {
-		m = append(m, mp.GetMiddlewares()...)
-	}
 	return
 }
