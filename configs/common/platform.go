@@ -20,7 +20,7 @@ func (p PlatformConfig) isNil() bool {
 	return p.Name == "" || p.Config == nil
 }
 
-func (p PlatformConfig) Init(sqlDriver driver.Driver) (err error) {
+func (p *PlatformConfig) Init(sqlDriver driver.Driver) (err error) {
 	fmt.Println("Finding correct platform....")
 	if p.isNil() {
 		return fmt.Errorf("local/cloud configuration is missing")

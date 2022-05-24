@@ -16,7 +16,7 @@ type PersistenceConfig struct {
 	Sql         SqlConfig `mapstructure:"sql"`
 }
 
-func (p PersistenceConfig) init() (err error) {
+func (p *PersistenceConfig) init() (err error) {
 	if p.SqlEnable && p.PgxEnable {
 		err = fmt.Errorf("at a time one sql vendor can be enabled")
 		return
@@ -69,11 +69,11 @@ func (s *SqlConfig) init() (err error) {
 	return
 }
 
-func (s *SqlConfig) Driver() driver.Driver {
+func (s SqlConfig) Driver() driver.Driver {
 	return s.driver
 }
 
-func (s *SqlConfig) ConnectionProvider() sqldb.SqlConnectionProvider {
+func (s SqlConfig) ConnectionProvider() sqldb.SqlConnectionProvider {
 	return SqlConnectionProviderImpl{
 		dbType: s.dbType,
 	}

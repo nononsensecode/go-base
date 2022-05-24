@@ -16,7 +16,7 @@ type ServerConfig struct {
 	Log         LogConfig         `mapstructure:"log"`
 }
 
-func (s ServerConfig) Init() (err error) {
+func (s *ServerConfig) Init() (err error) {
 	if s.Http.isNil() {
 		s.Http.Port = 8080
 	}
