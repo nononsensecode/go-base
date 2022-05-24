@@ -9,6 +9,7 @@ import (
 
 	"github.com/nononsensecode/go-base"
 	"github.com/nononsensecode/go-base/context/ctxtypes"
+	log "github.com/sirupsen/logrus"
 )
 
 func (l *LocalConfig) SqlConnectorProvider() (pName string, p base.SqlConnectorProvider) {
@@ -40,6 +41,7 @@ type Connector struct {
 }
 
 func (c *Connector) Connect(ctx context.Context) (d driver.Conn, err error) {
+	log.Debug("Connecting to sql db")
 	c.m.Lock()
 	defer c.m.Unlock()
 
@@ -49,6 +51,7 @@ func (c *Connector) Connect(ctx context.Context) (d driver.Conn, err error) {
 	if err != nil {
 		return
 	}
+	log.Debugf("DSN: %s", dsn)
 
 	d, err = c.d.Open(dsn)
 	return
