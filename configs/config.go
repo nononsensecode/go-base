@@ -6,9 +6,8 @@ import (
 )
 
 type Config struct {
-	Server        common.ServerConfig   `mapstructure:"server"`
-	Platform      common.PlatformConfig `mapstructure:"platform"`
-	isInitialized bool
+	Server   common.ServerConfig   `mapstructure:"server"`
+	Platform common.PlatformConfig `mapstructure:"platform"`
 }
 
 func (cfg *Config) Init() {

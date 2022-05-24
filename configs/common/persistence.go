@@ -49,6 +49,7 @@ func (s *SqlConfig) isNil() bool {
 }
 
 func (s *SqlConfig) init() (err error) {
+	fmt.Println("Initializing sql....")
 	s.dbType, err = sqldb.NewDbType(s.SqlVendor)
 	if err != nil {
 		return
@@ -68,11 +69,11 @@ func (s *SqlConfig) init() (err error) {
 	return
 }
 
-func (s SqlConfig) Driver() driver.Driver {
+func (s *SqlConfig) Driver() driver.Driver {
 	return s.driver
 }
 
-func (s SqlConfig) ConnectionProvider() sqldb.SqlConnectionProvider {
+func (s *SqlConfig) ConnectionProvider() sqldb.SqlConnectionProvider {
 	return SqlConnectionProviderImpl{
 		dbType: s.dbType,
 	}
