@@ -21,10 +21,5 @@ func (c DefaultSqlConnectionProvider) GetSqlConnection(ctx context.Context) (db 
 	}
 
 	db = sql.OpenDB(d)
-
-	if err = db.Ping(); err != nil {
-		return
-	}
-
 	return
 }
