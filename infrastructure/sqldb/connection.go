@@ -12,7 +12,7 @@ type SqlConnectionProvider interface {
 
 type DefaultSqlConnectionProvider struct{}
 
-func (c DefaultSqlConnectionProvider) GetConnection(ctx context.Context) (db *sql.DB, err error) {
+func (c DefaultSqlConnectionProvider) GetSqlConnection(ctx context.Context) (db *sql.DB, err error) {
 	var d driver.Connector
 	d, err = GetSqlConnector(ctx)
 
