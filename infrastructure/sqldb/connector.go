@@ -2,7 +2,6 @@ package sqldb
 
 import (
 	"context"
-	"database/sql"
 	"database/sql/driver"
 	"fmt"
 
@@ -73,17 +72,5 @@ func GetSqlConnector(ctx context.Context) (c driver.Connector, err error) {
 		"clientId": clientId,
 	}).Debug("sql connection created and retrieved successfully")
 
-	return
-}
-
-func GetConnection(ctx context.Context) (db *sql.DB, err error) {
-	var d driver.Connector
-	d, err = GetSqlConnector(ctx)
-
-	if err != nil {
-		return
-	}
-
-	db = sql.OpenDB(d)
 	return
 }
