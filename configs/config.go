@@ -18,7 +18,7 @@ func (cfg *Config) Init() {
 	httpsrvr.AddMiddlewares(cfg.getHttpMiddlewares()...)
 
 	d := cfg.Server.Persistence.Sql.Driver()
-	if err := cfg.Platform.Init(d); err != nil {
+	if err := cfg.Platform.Init(cfg.IsSqlEnabled(), cfg.IsPgxEnabled(), cfg.IsMongoDbEnabled(), d); err != nil {
 		panic(err)
 	}
 }
