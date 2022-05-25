@@ -6,7 +6,7 @@ import (
 
 	"github.com/nononsensecode/go-base"
 	"github.com/nononsensecode/go-base/context/ctxtypes"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -15,11 +15,15 @@ var (
 )
 
 func Init(providers []base.PgSqlPoolConnectorProvider) {
+	log.Debug("Initializing local configuration....")
 	pgsqlPoolConnectorProviders = make(map[string]base.PgSqlPoolConnectorProvider)
 	pgsqlPoolConnectors = make(map[string]map[string]base.PgSqlPoolConnector)
 
 	for _, p := range providers {
 		name, provider := p.PgSqlPoolConnectorProvider()
+		log.WithFields(log.Fields{
+			"ProviderName": name,
+		}).Debug("Adding provider")
 		pgsqlPoolConnectorProviders[name] = provider
 	}
 }
@@ -48,7 +52,7 @@ func GetPgSqlConnectionPoolConnector(ctx context.Context) (connector base.PgSqlP
 	}
 
 	if connector, ok = pgsqlPoolConnectors[cloudVendor][clientId]; ok {
-		logrus.WithFields(logrus.Fields{
+		log.WithFields(log.Fields{
 			"cloudPlatform": cloudVendor,
 			"clientId":      clientId,
 		}).Debug("postgresql connector retrieved successfully")
@@ -56,7 +60,7 @@ func GetPgSqlConnectionPoolConnector(ctx context.Context) (connector base.PgSqlP
 		return
 	}
 
-	logrus.WithFields(logrus.Fields{
+	log.WithFields(log.Fields{
 		"cloudPlatform": cloudVendor,
 		"clientId":      clientId,
 	}).Debug("As there is no connector, creating new one")
@@ -69,7 +73,7 @@ func GetPgSqlConnectionPoolConnector(ctx context.Context) (connector base.PgSqlP
 	pgsqlPoolConnectors[cloudVendor] = make(map[string]base.PgSqlPoolConnector)
 	pgsqlPoolConnectors[cloudVendor][clientId] = connector
 
-	logrus.WithFields(logrus.Fields{
+	log.WithFields(log.Fields{
 		"cloudPlatform": cloudVendor,
 		"clientId":      clientId,
 	}).Debug("postgresql connection pool connector created and retrieved successfully")
