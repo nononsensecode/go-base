@@ -10,7 +10,7 @@ import (
 )
 
 type Configurer interface {
-	Init(sqlDriver driver.Driver) error
+	Init(isSqlEnable, isPgxEnable, isMongoEnable bool, sqlDriver driver.Driver) error
 }
 
 type MiddlewareProvider interface {

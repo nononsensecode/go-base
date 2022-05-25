@@ -14,7 +14,7 @@ var (
 	pgsqlPoolConnectors         map[string]map[string]base.PgSqlPoolConnector
 )
 
-func Init(providers []base.PgSqlPoolConnectorProvider) {
+func Init(providers ...base.PgSqlPoolConnectorProvider) {
 	log.Debug("Initializing local configuration....")
 	pgsqlPoolConnectorProviders = make(map[string]base.PgSqlPoolConnectorProvider)
 	pgsqlPoolConnectors = make(map[string]map[string]base.PgSqlPoolConnector)

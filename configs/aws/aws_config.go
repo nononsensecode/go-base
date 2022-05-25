@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
+	"github.com/nononsensecode/go-base/infrastructure/pgsqldb"
 	"github.com/nononsensecode/go-base/infrastructure/sqldb"
 	"github.com/nononsensecode/go-base/interfaces/httpsrvr"
 )
@@ -29,7 +30,7 @@ type DbConfig struct {
 	Dsn string `mapstructure:"dsn"`
 }
 
-func (a *AWSConfig) Init(sqlDriver driver.Driver) (err error) {
+func (a *AWSConfig) Init(isSqlEnable, isPgxEnable, isMongoEnable bool, sqlDriver driver.Driver) (err error) {
 	if a.cache == nil {
 		err = fmt.Errorf("aws configuration is not initialized")
 		return
@@ -54,9 +55,23 @@ func (a *AWSConfig) Init(sqlDriver driver.Driver) (err error) {
 		return
 	}
 
-	if sqlDriver != nil {
+	if isSqlEnable && sqlDriver == nil {
+		err = fmt.Errorf("sql is enabled, but sql driver is nil")
+		return
+	}
+
+	if isSqlEnable && isPgxEnable {
+		err = fmt.Errorf("only one sql driver can be enabled")
+		return
+	}
+
+	if isSqlEnable && sqlDriver != nil {
 		a.d = sqlDriver
 		sqldb.Init(a)
+	}
+
+	if isPgxEnable {
+		pgsqldb.Init(a)
 	}
 
 	httpsrvr.AddMiddlewares(a.GetMiddlewares()...)
