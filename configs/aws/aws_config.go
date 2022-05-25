@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
+	"github.com/nononsensecode/go-base/infrastructure/mongodb"
 	"github.com/nononsensecode/go-base/infrastructure/pgsqldb"
 	"github.com/nononsensecode/go-base/infrastructure/sqldb"
 	"github.com/nononsensecode/go-base/interfaces/httpsrvr"
@@ -72,6 +73,10 @@ func (a *AWSConfig) Init(isSqlEnable, isPgxEnable, isMongoEnable bool, sqlDriver
 
 	if isPgxEnable {
 		pgsqldb.Init(a)
+	}
+
+	if isMongoEnable {
+		mongodb.Init(a)
 	}
 
 	httpsrvr.AddMiddlewares(a.GetMiddlewares()...)

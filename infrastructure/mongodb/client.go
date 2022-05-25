@@ -14,7 +14,7 @@ var (
 	mongoDbClientBuilders         map[string]map[string]base.MongoDbClientBuilder
 )
 
-func Init(providers []base.MongoDbClientBuilderProvider) {
+func Init(providers ...base.MongoDbClientBuilderProvider) {
 	mongoDbClientBuilderProviders = make(map[string]base.MongoDbClientBuilderProvider)
 	mongoDbClientBuilders = make(map[string]map[string]base.MongoDbClientBuilder)
 

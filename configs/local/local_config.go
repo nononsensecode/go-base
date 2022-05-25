@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/nononsensecode/go-base/infrastructure/mongodb"
 	"github.com/nononsensecode/go-base/infrastructure/pgsqldb"
 	"github.com/nononsensecode/go-base/infrastructure/sqldb"
 	"github.com/nononsensecode/go-base/interfaces/httpsrvr"
@@ -48,6 +49,10 @@ func (l *LocalConfig) Init(isSqlEnable, isPgxEnable, isMongoEnable bool, sqlDriv
 
 	if isPgxEnable {
 		pgsqldb.Init(l)
+	}
+
+	if isMongoEnable {
+		mongodb.Init(l)
 	}
 
 	httpsrvr.AddMiddlewares(l.GetMiddlewares()...)
